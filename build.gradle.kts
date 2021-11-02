@@ -2,8 +2,8 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec
 import com.codingfeline.buildkonfig.gradle.BuildKonfigExtension
 
 plugins {
-    kotlin("multiplatform") version "1.4.32"
-    kotlin("plugin.serialization") version "1.4.32"
+    kotlin("multiplatform") version "1.5.31"
+    kotlin("plugin.serialization") version "1.5.31"
     id("com.codingfeline.buildkonfig") version "0.7.0"
 }
 
@@ -11,9 +11,9 @@ group = "com.github.hjubb"
 val versionString = "0.5.2"
 version = versionString
 
-val binomVersion = "0.1.28"
-val ktor_version = "1.5.2"
-val coroutineVersion = "1.4.3-native-mt"
+val binomVersion = "0.1.31"
+val ktor_version = "1.6.4"
+val coroutineVersion = "1.5.2-native-mt"
 
 repositories {
     mavenCentral()
@@ -21,7 +21,7 @@ repositories {
         setUrl("https://kotlin.bintray.com/kotlinx")
     }
     maven {
-        setUrl("https://repo.binom.pw/releases")
+        setUrl("https://repo.binom.pw")
     }
 }
 kotlin {
@@ -54,15 +54,15 @@ kotlin {
         val linuxX64Main by getting
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.3")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
-                api("pw.binom.io:file:$binomVersion")
-                api("pw.binom.io:core:$binomVersion")
+                implementation("pw.binom.io:file:$binomVersion")
+                implementation("pw.binom.io:core:$binomVersion")
                 implementation("io.ktor:ktor-client-core:$ktor_version")
                 implementation("io.ktor:ktor-client-curl:$ktor_version")
                 implementation("io.ktor:ktor-client-json:$ktor_version")
                 implementation("io.ktor:ktor-client-serialization:$ktor_version")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
             }
         }
         val commonTest by getting

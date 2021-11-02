@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import pw.binom.io.file.File
 import pw.binom.io.file.isExist
-import pw.binom.io.file.read
+import pw.binom.io.file.openRead
 import pw.binom.io.readText
 import pw.binom.io.use
 import pw.binom.io.utf8Reader
@@ -112,7 +112,7 @@ class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP
 
             val (searchName, rename) = contractName.split(':').extractNames()
 
-            val input = file.read().use {
+            val input = file.openRead().use {
                 it.utf8Reader().readText()
             }
 
@@ -214,7 +214,7 @@ class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP
                     ),
                     true
                 )
-            } while (verifyResult.result.toLowerCase().contains("pending") && retries++ <= 10)
+            } while (verifyResult.result.lowercase().contains("pending") && retries++ <= 10)
 
             println(verifyResult.result)
 

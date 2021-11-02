@@ -4,6 +4,7 @@ import kotlinx.cli.ArgType
 import kotlinx.cli.ExperimentalCli
 import kotlinx.cli.Subcommand
 import kotlinx.cli.default
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import pw.binom.io.file.*
@@ -40,6 +41,11 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
         description = "file to write your standard json output to"
     )
 
+    private val json = Json {
+        // any Json config here
+        prettyPrint = true
+    }
+
     override fun execute() {
 
         val current = File(".${File.SEPARATOR}")
@@ -68,17 +74,14 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
         }
 
         val sol = process(fileSet + deps, nonOptimized, runs)
-        val solString = Json {
-            // any Json config here
-            prettyPrint = true
-        }.encodeToString(sol)
+        val solString = json.encodeToString(sol)
 
         // get the output file's name
         val filename = outputFile ?: "solc-input-${
             if (initial.isDirectory) initial.name
-            else initial.nameWithoutExtension.toLowerCase()
+            else initial.nameWithoutExtension.lowercase()
         }.json"
-        File(filename).write(append = false).use { channel ->
+        File(filename).openWrite().use { channel ->
             channel.write(solString.toByteBufferUTF8())
         }
         println("file written to: $filename")
@@ -208,15 +211,11 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
 
     data class WrappedFile(val path: String, val file: File) {
         fun getContent(): Content {
-            val content = file.read().use { channel ->
+            val content = file.openRead().use { channel ->
                 channel.utf8Reader().readText()
             }
             return Content(content)
         }
-    }
-
-    fun getDir(dir: String): File {
-        return File(dir)
     }
 
 }
